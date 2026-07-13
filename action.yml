@@ -1,0 +1,43 @@
+name: "Handraise Gate"
+description: "Block a workflow on a typed human approval delivered in Slack."
+author: "Handraise"
+branding:
+  icon: user-check
+  color: purple
+
+inputs:
+  assignee:
+    description: "Who approves: Slack user id, @handle, or email."
+    required: true
+  title:
+    description: "What the approver is asked."
+    required: false
+    default: "CI gate: proceed?"
+  token:
+    description: "Handraise bearer token authorizing request creation."
+    required: false
+  timeout-minutes:
+    description: "How long the gate waits for a verdict before failing as timed_out."
+    required: false
+    default: "10"
+  summary-md:
+    description: "Extra markdown appended to the run metadata shown on the approval card."
+    required: false
+  mcp-url:
+    description: "Handraise MCP endpoint. Only set this if you self-host Handraise."
+    required: false
+    default: "https://handraise.hack.zmvp.dev/mcp"
+
+outputs:
+  verdict:
+    description: "approved | rejected | timed_out | cancelled | error"
+  approved:
+    description: '"true" if a human approved, otherwise "false".'
+  comment:
+    description: "The approver's comment, if any."
+  request-id:
+    description: "The Handraise request id, useful for auditing against the ledger."
+
+runs:
+  using: node24
+  main: dist/index.js

@@ -1,0 +1,34 @@
+name: selftest
+
+on:
+  workflow_dispatch:
+    inputs:
+      assignee:
+        description: "Who approves (Slack user id, @handle, or email)"
+        required: true
+      title:
+        description: "What the approver is asked"
+        required: false
+        default: "selftest: proceed?"
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: handraise-gate
+        id: gate
+        uses: ./
+        with:
+          assignee: ${{ inputs.assignee }}
+          title: ${{ inputs.title }}
+          token: ${{ secrets.GATE_TOKEN }}
+
+      # Only reached if the gate step succeeded (approved).
+      - name: after the gate
+        run: echo "Approved. Verdict=${{ steps.gate.outputs.verdict }} comment=${{ steps.gate.outputs.comment }}"
+
+      - name: report verdict either way
+        if: always()
+        run: echo "verdict=${{ steps.gate.outputs.verdict }} approved=${{ steps.gate.outputs.approved }} request-id=${{ steps.gate.outputs.request-id }}"
