@@ -93,19 +93,20 @@ async function runGate() {
 
   if (token) core.setSecret(token);
 
+  // Slack section blocks render mrkdwn, not GitHub Markdown: *bold*, <url|label> links.
   const runMeta = [
-    `**Repository:** ${process.env.GITHUB_REPOSITORY ?? "(local run)"}`,
-    `**Run:** ${
+    `*Repository:* ${process.env.GITHUB_REPOSITORY ?? "(local run)"}`,
+    `*Run:* ${
       process.env.GITHUB_RUN_ID
-        ? `[#${process.env.GITHUB_RUN_ID}](${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID})`
+        ? `<${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}|#${process.env.GITHUB_RUN_ID}>`
         : "(local run)"
     }`,
-    `**Triggered by:** ${process.env.GITHUB_ACTOR ?? process.env.USER ?? "unknown"}`,
-    `**Ref:** ${process.env.GITHUB_REF ?? "n/a"}`,
+    `*Triggered by:* ${process.env.GITHUB_ACTOR ?? process.env.USER ?? "unknown"}`,
+    `*Ref:* ${process.env.GITHUB_REF ?? "n/a"}`,
   ].join("\n");
-  const summary = `### ${title}\n\n${runMeta}${summaryMd ? `\n\n${summaryMd}` : ""}`;
+  const summary = `${runMeta}${summaryMd ? `\n\n${summaryMd}` : ""}`;
 
-  const client = new Client({ name: "handraise-gate", version: "1.0.0" });
+  const client = new Client({ name: "handraise-gate", version: "1.0.1" });
   const transport = new StreamableHTTPClientTransport(new URL(mcpUrl), {
     requestInit: token ? { headers: { Authorization: `Bearer ${token}` } } : undefined,
   });

@@ -1,6 +1,6 @@
 {
   "name": "handraise-gate",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "description": "GitHub Action: block a workflow on a typed human approval delivered in Slack via Handraise.",
   "main": "dist/index.js",

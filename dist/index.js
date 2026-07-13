@@ -36959,17 +36959,15 @@ async function runGate() {
   const deadlineMs = timeoutMinutes * 60 * 1e3;
   if (token) core.setSecret(token);
   const runMeta = [
-    `**Repository:** ${process.env.GITHUB_REPOSITORY ?? "(local run)"}`,
-    `**Run:** ${process.env.GITHUB_RUN_ID ? `[#${process.env.GITHUB_RUN_ID}](${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID})` : "(local run)"}`,
-    `**Triggered by:** ${process.env.GITHUB_ACTOR ?? process.env.USER ?? "unknown"}`,
-    `**Ref:** ${process.env.GITHUB_REF ?? "n/a"}`
+    `*Repository:* ${process.env.GITHUB_REPOSITORY ?? "(local run)"}`,
+    `*Run:* ${process.env.GITHUB_RUN_ID ? `<${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}|#${process.env.GITHUB_RUN_ID}>` : "(local run)"}`,
+    `*Triggered by:* ${process.env.GITHUB_ACTOR ?? process.env.USER ?? "unknown"}`,
+    `*Ref:* ${process.env.GITHUB_REF ?? "n/a"}`
   ].join("\n");
-  const summary = `### ${title}
-
-${runMeta}${summaryMd ? `
+  const summary = `${runMeta}${summaryMd ? `
 
 ${summaryMd}` : ""}`;
-  const client = new Client({ name: "handraise-gate", version: "1.0.0" });
+  const client = new Client({ name: "handraise-gate", version: "1.0.1" });
   const transport = new StreamableHTTPClientTransport(new URL(mcpUrl), {
     requestInit: token ? { headers: { Authorization: `Bearer ${token}` } } : void 0
   });
